@@ -5,7 +5,6 @@ do_scatter = function(result, dom_id){
 	console.log($("#chart svg"))
 	
 
-	//var result = []
 	_.defer(function () {
 		
 		console.log("testing randomData")
@@ -71,29 +70,6 @@ do_scatter = function(result, dom_id){
 		                });
 		            }
 		        }
-		        return data;
-		    }
-			
-		    function fetchData(final_data) { 
-		        var data = [], shapes = ['circle'];
-		        
-		            data.push({
-		                key: 'Group ' + 0,
-		                values: [],
-		                slope: final_data,
-		                intercept: test1
-						//slope: 1.5,
-						//intercept: -10
-		            });
-		            /*for (j = 0; j < 40; j++) {
-		                data[0].values.push({
-		                    x: finaldata[2][j],
-		                    y: finaldata[3][j],
-		                    size: .5,
-		                    shape: shapes[j % shapes.length]
-		                });
-		            }*/
-		        
 		        return data;
 		    }
 		

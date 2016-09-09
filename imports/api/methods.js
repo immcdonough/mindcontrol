@@ -71,20 +71,13 @@ Meteor.methods({
                   shape: shapes[j % shapes.length]
               });
           }
-		  
-		  //test output
-		  console.log("m1 data pairs")
-		  console.log(m1)
-		  console.log("random data")
-		  //test_data=randomData(1,40)
-		  //console.log(test_data)
+
 		  
 		  return data_pairs
 				 
 		  var slope = reg_result[2], intercept = reg_result[3];
 		  
 		  final_data = [slope,intercept,m1,m2];
-		  console.log(final_data[0] + "," + final_data[1])
 		  //return final_data;
 		  
 		  
