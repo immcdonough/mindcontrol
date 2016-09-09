@@ -1,5 +1,16 @@
-<template name="base">
 
+	
+<template name="base">
+	<style>
+	#chart svg {
+	  height: 400px;
+	  width: 600px;
+	}
+	</style>
+	<div id="chart">
+	  <svg></svg>
+	</div>
+	<div>Current Subject: {{subject_from_scatter}}</div>	
 
     {{> qa }}
 

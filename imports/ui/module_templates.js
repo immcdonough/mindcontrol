@@ -75,7 +75,14 @@ render_histogram = function(entry_type){
                 }
 }
 
-
+Template.base.helpers({
+	
+	subject_from_scatter: function(){
+		
+		return Session.get("subject_selected_from_scatter")
+		
+	}
+})
 
 Template.qa.rendered = function() {
 

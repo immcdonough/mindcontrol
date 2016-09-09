@@ -49,9 +49,10 @@ Meteor.methods({
 		  console.log(m1[0] + "," + m2[0])
 				  
 		  var data_pairs = [], shapes = ['circle'];
+		  var name_length = metric1.length-3;
           data_pairs.push({
               //key: metric_name1.substring(0,5),
-              key: entry_type,
+              key: entry_type + ": " + metric1.substring(0,name_length),
 			  values: [],
               slope: reg_result[2],
               intercept: reg_result[3]

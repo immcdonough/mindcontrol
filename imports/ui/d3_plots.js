@@ -21,12 +21,18 @@ do_scatter = function(result, dom_id){
 		            .showDistX(true)
 		            .showDistY(true)
 		            .duration(300)
-		            .color(d3.scale.category10().range());
+		            .color(d3.scale.category10().range())
+				//.useInteractiveGuideline(true);
 		        chart.dispatch.on('renderEnd', function(){
 		            console.log('render complete');
 		        });
 		        chart.xAxis.tickFormat(d3.format('.02f'));
 		        chart.yAxis.tickFormat(d3.format('.02f'));
+				chart.tooltipContent(function(key,y,e,graph){
+								//console.log(key,"y",y,"e",e,"",graph)
+				                return key;
+				            });
+				//chart.tooltip.contentGenerator(function(d){console.log(d)})
 		        d3.select('#chart svg')
 		            //.datum(nv.log(randomData(1,200)))
 					.datum(result)
@@ -46,7 +52,7 @@ do_scatter = function(result, dom_id){
 						var idx = e.target.__data__.point
 						
 						console.log("maybe you clicked, ", idx)
-						console.log("result at idx", result[0].values[idx])
+						Session.set("subject_selected_from_scatter",result[0].values[idx].info.name)
 					})
 				
 		    });
