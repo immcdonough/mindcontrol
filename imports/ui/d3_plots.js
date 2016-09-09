@@ -5,8 +5,15 @@ do_scatter = function(result, dom_id){
 	console.log($("#chart svg"))
 	
 
-	var result = []
+	//var result = []
 	_.defer(function () {
+		
+		console.log("testing randomData")
+		console.log(randomData(1,40))
+		
+		console.log("testing Meteor Call")
+		console.log("result from meteor call is", result)
+		console.log("nv.log", nv.log(result), nv.log(randomData(1,200)))//Meteor.call("getScatterData", "qa", "anat_fber", "anat_cnr", {}, function(error, result){console.log("error is", error, "result is", result)}))
 		
 		
 		var chart;
@@ -21,12 +28,28 @@ do_scatter = function(result, dom_id){
 		        });
 		        chart.xAxis.tickFormat(d3.format('.02f'));
 		        chart.yAxis.tickFormat(d3.format('.02f'));
-		        d3.select('#test1 svg')
-		            .datum(nv.log(randomData(4,40)))
+		        d3.select('#chart svg')
+		            //.datum(nv.log(randomData(1,200)))
+					.datum(result)
 		            .call(chart);
 		        nv.utils.windowResize(chart.update);
 		        chart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
 		        return chart;
+		    }, function(){
+		    	
+                /*(d3.selectAll(".nv-point").on("click", function(d){
+                    console.log("data is", d)
+                    //addPapaya(d.info, d.info.entry_type, template_instance)
+                    //Session.set("currentViewerInfo", d.info)
+                })*/
+					
+					$(document).on("click", "#chart svg", function(e){
+						var idx = e.target.__data__.point
+						
+						console.log("maybe you clicked, ", idx)
+						console.log("result at idx", result[0].values[idx])
+					})
+				
 		    });
 		    function randomData(groups, points) { //# groups,# points per group
 		        var data = [],
@@ -48,6 +71,29 @@ do_scatter = function(result, dom_id){
 		                });
 		            }
 		        }
+		        return data;
+		    }
+			
+		    function fetchData(final_data) { 
+		        var data = [], shapes = ['circle'];
+		        
+		            data.push({
+		                key: 'Group ' + 0,
+		                values: [],
+		                slope: final_data,
+		                intercept: test1
+						//slope: 1.5,
+						//intercept: -10
+		            });
+		            /*for (j = 0; j < 40; j++) {
+		                data[0].values.push({
+		                    x: finaldata[2][j],
+		                    y: finaldata[3][j],
+		                    size: .5,
+		                    shape: shapes[j % shapes.length]
+		                });
+		            }*/
+		        
 		        return data;
 		    }
 		

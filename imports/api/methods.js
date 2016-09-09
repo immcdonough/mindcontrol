@@ -12,6 +12,170 @@ Meteor.methods({
 
             
       },
+	  
+	  getScatterData: function(entry_type, metric1, metric2, filter){
+          if (Meteor.isServer){
+          var no_null = filter
+          no_null["entry_type"] = entry_type
+          var metric_name1 = "metrics."+metric1
+		  var metric_name2 = "metrics."+metric2
+          //no_null["metrics"] = {}
+          //no_null["metrics"]["$ne"] = null
+          
+          if (Object.keys(no_null).indexOf(metric_name1) >=0 ){
+              no_null[metric_name1]["$ne"] = null
+          }
+          else{
+              no_null[metric_name1] = {$ne: null}
+          }
+          if (Object.keys(no_null).indexOf(metric_name2) >=0 ){
+              no_null[metric_name2]["$ne"] = null
+		 	}
+          else{
+              no_null[metric_name2] = {$ne: null}
+          }
+	  var collection = Subjects.find(no_null).fetch()
+		  console.log(collection[0])
+		  console.log(collection.length)
+	  //console.log(Subjects.find(no_null, {sort: [[metric_name, "ascending"]], limit: 1}).fetch()[0]["metrics"][metric])
+	  //console.log(collection[0]["metrics"][metric])
+		  var m1 = new Array(collection.length);
+		  var m2 = new Array(collection.length);
+		  for (i=0; i< collection.length; i++) {
+		  	m1[i] = collection[i]["metrics"][metric1]
+			m2[i] = collection[i]["metrics"][metric2]
+		  }
+		  reg_result = findLineByLeastSquares(m1, m2)
+		  console.log(m1[0] + "," + m2[0])
+				  
+		  var data_pairs = [], shapes = ['circle'];
+          data_pairs.push({
+              //key: metric_name1.substring(0,5),
+              key: entry_type,
+			  values: [],
+              slope: reg_result[2],
+              intercept: reg_result[3]
+			  //slope: 1.4,
+			  //intercept: -10
+          });
+		  for (j = 0; j < collection.length; j++) {
+			  //for (j = 0; j < 40; j++) {
+				  var coll = collection[j]
+				  data_pairs[0].values.push({
+                  x: m1[j],
+                  y: m2[j],
+					  info: {entry_type: coll.entry_type, name: coll.name, subject_id: coll.subject_id},
+				  //x: j,
+			      //y: j,  
+                  size: .5,
+                  shape: shapes[j % shapes.length]
+              });
+          }
+		  
+		  //test output
+		  console.log("m1 data pairs")
+		  console.log(m1)
+		  console.log("random data")
+		  //test_data=randomData(1,40)
+		  //console.log(test_data)
+		  
+		  return data_pairs
+				 
+		  var slope = reg_result[2], intercept = reg_result[3];
+		  
+		  final_data = [slope,intercept,m1,m2];
+		  console.log(final_data[0] + "," + final_data[1])
+		  //return final_data;
+		  
+		  
+		  
+			  function findLineByLeastSquares(values_x, values_y) {
+			      var sum_x = 0;
+			      var sum_y = 0;
+			      var sum_xy = 0;
+			      var sum_xx = 0;
+			      var count = 0;
+
+			      /*
+			       * We'll use those variables for faster read/write access.
+			       */
+			      var x = 0;
+			      var y = 0;
+			      var values_length = values_x.length;
+
+			      if (values_length != values_y.length) {
+			          throw new Error('The parameters values_x and values_y need to have same size!');
+			      }
+
+			      /*
+			       * Nothing to do.
+			       */
+			      if (values_length === 0) {
+			          return [ [], [] ];
+			      }
+
+			      /*
+			       * Calculate the sum for each of the parts necessary.
+			       */
+			      for (var v = 0; v < values_length; v++) {
+			          x = values_x[v];
+			          y = values_y[v];
+			          sum_x += x;
+			          sum_y += y;
+			          sum_xx += x*x;
+			          sum_xy += x*y;
+			          count++;
+			      }
+
+			      /*
+			       * Calculate m and b for the formular:
+			       * y = x * m + b
+			       */
+			      var m = (count*sum_xy - sum_x*sum_y) / (count*sum_xx - sum_x*sum_x);
+			      var b = (sum_y/count) - (m*sum_x)/count;
+
+			      /*
+			       * We will make the x and y result line now
+			       */
+			      var result_values_x = [];
+			      var result_values_y = [];
+
+			      for (var v = 0; v < values_length; v++) {
+			          x = values_x[v];
+			          y = x * m + b;
+			          result_values_x.push(x);
+			          result_values_y.push(y);
+			      }
+
+			      return [result_values_x, result_values_y,m,b];
+			  }
+  		    
+			//function randomData(groups, points) { //# groups,# points per group
+  		        var data = [], shapes = ['circle'];
+  		        //for (i = 0; i < groups; i++) {
+  		            data.push({
+  		                key: 'Group ' + 0,
+  		                values: [],
+  		                slope: Math.random() - .01,
+  		                intercept: Math.random() - .5
+  		            });
+  		            for (j = 0; j < 40; j++) {
+  		                data[0].values.push({
+  		                    x: Math.random()*10,
+  		                    y: Math.random()*10,
+  		                    size: Math.random(),
+  		                    shape: shapes[j % shapes.length]
+  		                });
+  		            }
+					//}
+  		        //return data;
+				//}
+		  
+		  
+	  
+	  }//end isServer
+		
+	  },
       
     getHistogramData: function(entry_type, metric, bins, filter){
           //console.log("getting histogram data")
